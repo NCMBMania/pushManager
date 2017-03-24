@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="ja"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang="ja"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang="ja"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="ja"><!--<![endif]--><head>
+<base href="/">
+<style type="text/css"></style>
+    <meta http-equiv="Content-Language" content="ja">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Script-Type" content="text/javascript">
+    <meta http-equiv="Content-Style-Type" content="text/css">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <noscript>
+    　<meta http-equiv="refresh" content="0;URL=/system/noscript">
+    </noscript>
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>プッシュ通知作成システム - ニフティクラウドmobile backend</title>
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <link rel="stylesheet" href="assets/vendor.css">
+    <link rel="stylesheet" href="assets/app.css">
+  <style></style></head>
+  <body ng-app="cmsApp" ng-controller="RootCtrl" class="ng-scope">
+    <!--[if lt IE 7]>
+      <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+    <!-- Add your site or application content here -->
+    <header id="header" class="reset">
+
+  <div class="header-inner">
+    <div class="logo-site">
+     <a href="/"><img src="assets/logo.png"></a>
+    </div>
+
+    <div class="">
+      <div class="heaer-manu">
+        <div class="header-menu-item header-menu-app hide" ng-show="false">
+          <a href="#/applications/new"><span>+新しいアプリ</span></a>
+        </div>
+        <div class="header-menu-item header-menu-doc hide" ng-show="false">
+          <a href="" target="_blank"><span>ドキュメント</span></a>
+        </div>
+        <div class="header-menu-item header-menu-community hide" ng-show="false">
+          <a href="" target="_blank"><span>コミュニティ</span></a>
+        </div>
+        <div class="header-menu-item header-menu-user" ng-show="nav.isLogin()">
+          <div class="header-menu-item-inner">
+            <a href="#" id="accout-menu" ng-click="nav.appSelect()">
+              <!--
+            --><span class="icon header-user"></span>
+              <!--
+            --><span class="text">niftyuser&nbsp;</span>
+              <!--
+            --><span class="icon arrow arrow-down white"></span>
+              <!--
+          -->
+            </a>
+            <ul id="accout-menu-list" ng-show="nav.visibleMenu" class="hide">
+              <li><a href="javascript:void(0);" ng-click="nav.logout()"><span class="icon header-logout"></span><span class="text">ログアウト</span></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="status">
+      <span class="icon loading hide" ng-show="globals.loading"></span>
+      <span class="">
+        <span class="icon size-s  hide" ng-show="globals.headerMessage"></span>
+      <span class="text ng-binding hide" ng-show="globals.headerMessage">
+          <!-- ngIf: globals.headerMessageCode -->
+      </span>
+      </span>
+      <span class=""><span class="icon attention size-s hide" ng-show="globals.apiError"></span>
+      <span class="text hide" ng-show="globals.apiError">APIの呼び出しに失敗しました。<!-- ngIf: globals.apiErrorCode --> <a href="javascript:void(0);" ng-click="reloadPage()">更新する</a></span>
+      </span>
+      <span class=""><span class="icon attention size-s hide" ng-show="globals.userError"></span>
+      <span class="text ng-binding hide" ng-show="globals.userError"></span></span>
+      <span class="" id="script-error-wrap"><span class="icon attention size-s hide" ng-show="globals.scriptError" id="script-error-icon"></span>
+      <span class="text hide" ng-show="globals.scriptError" id="script-error-msg">プログラムでエラーが発生しました。<a href="javascript:void(0);" onclick="location.reload();">更新する</a></span><span class="">
+    </span></span></div>
+  </div>
+
+  <div id="app-footpath" ng-show="nav.isLogin()" class="">
+    <div class="app-name">
+      <div class="inner" ng-click="appSelect()">
+        <span class="text ng-binding">niftyapp&nbsp;</span>
+        <span class="icon arrow-updown white hide"></span>
+      </div>
+    </div>
+    <div class="app-menu">
+      <span class="ng-binding">プッシュ作成</span>
+      <span class="item-right">
+            <button class="btn size-ss orange" ng-click="reloadRoute()"><span class="icon left request"></span><span class="text">更新</span></button>
+      </span>
+    </div>
+  </div>
+
+</header>
+    <div id="container" class="">
+      <!-- uiView:  --><div class="container-inner ng-scope" ui-view=""><div class="main-area reset ng-scope">
+  <div class="navigation reset">
+  <ul>
+    <li ng-show="true" class="">
+      <a href="http://cluisb3-adl-app000.c4sa.net/pushlist" ng-class="{'stay': appCurrent == 'pushlist'}" ng-click="selectAppMenu(appCurrent == 'pushlist')">
+        <span class="icon gnavi-datastore"></span>
+        <span class="text">プッシュ一覧</span>
+      </a>
+    </li>
+    <li ng-show="true" class="">
+      <a href="http://cluisb3-adl-app000.c4sa.net/push" ng-class="{'stay': appCurrent == 'push'}" ng-click="selectAppMenu(appCurrent == 'push')" class="stay">
+        <span class="icon gnavi-pushinfo"></span>
+        <span class="text">プッシュ作成</span>
+      </a>
+    </li>
+    <li class="app-settings" ng-show="true">
+      <a href="/settings" ng-class="{'stay': appCurrent == 'settings'}" ng-click="selectAppMenu(appCurrent == 'settings')">
+        <span class="icon gnavi-appset"></span>
+        <span class="text">アプリ設定</span>
+      </a>
+    </li>
+  </ul>
+</div>
+
+  <div class="contents reset">
+    <div class="module02 module02-push-form">
+
+      <div class="module-content"><div class="control-group"><p><a href="/pushlist" ng-class="{'stay': appCurrent == 'pushlist'}" ng-click="selectAppMenu(appCurrent == 'pushlist')" class="btn"><span class="icon left back"></span><span class="text">プッシュ通知一覧へ</span></a></p></div></div>
+<div class="module-title">
+        <p class="title">プッシュ通知 配信情報</p>
+      </div>
+
+      <div class="module-content">
+        <div class="control-group">
+          <p><img src="assets/route.png"></p>        </div>
+        <pushform><form class="form-horizontal pushform ng-pristine ng-valid ng-valid-url ng-valid-pattern" name="pushForm" novalidate="" ng-submit="void();">
+  <div class="auto-resize" style="margin-top:23px;">
+
+    <!-- プレビュー -->
+    <div class="control-group long previewblock">
+      <center><label>
+        <input value="ios" ng-model="previewtype" name="previewtype" class="ng-valid ng-dirty ng-touched ng-valid-parse ng-pristine ng-untouched" style="" checked="checked" type="radio"><br><img src="assets/icon_ios.gif" width="100px" height="auto"></label>
+      &nbsp;
+      <label>
+        <input value="android" ng-model="previewtype" name="previewtype" class="ng-valid ng-dirty ng-touched ng-pristine ng-untouched" style="" type="radio"><br><img src="assets/icon_android.gif" width="100px" height="auto"></label></center>
+      <div ng-show="previewtype === 'ios'" class="previewbox ios hide">
+        <div class="message ng-binding">アプリをインストールしている端末に入力されたメッセージでプッシュ通知を送信します。</div>
+      </div>
+      <div ng-show="previewtype === 'android'" class="previewbox android">
+        <div class="title ng-binding">プッシュ通知であなたのスマホに...</div>
+        <div class="message ng-binding">アプリをインストールしている端末に入力されたメッセージでプッシュ通知を送信します。</div>
+      </div>
+    </div>
+
+      <!-- ngRepeat: message in messages --><div ng-repeat="message in messages" class="ng-scope">
+    <!-- タイトル -->
+    <div class="control-group long">
+      <div class="control-label">
+        <label class="bold">タイトル</label><a class="inline-btn" href="javascript:void(0);"><span class="icon question right"><span class="balloon-arrow-bottom-s white ng-binding">プッシュ通知で表示するタイトルを記述します。(Android：システムトレイに表示する件名、iOS：Apple Watchに表示する文字列)</span></span></a></div>
+      <div class="controls">
+        <input class="size-l ng-pristine ng-untouched ng-valid" ng-model="message.title" name="title" value="プッシュ通知であなたのスマホにお知らせを送信いたします。" type="text">
+        <span class="controls-inline error-message hide" ng-show="pushForm.title.$dirty &amp;&amp; pushForm.title.$error.required">タイトルが入力されてません。</span>
+      </div>
+    </div>
+
+    <!-- メッセージ -->
+    <div class="control-group long">
+      <div class="control-label">
+        <label class="bold">メッセージ</label><a class="inline-btn" href="javascript:void(0);"><span class="icon question right"><span class="balloon-arrow-bottom-s white ng-binding">プッシュ通知で表示する内容を記述します。</span></span></a>
+      </div>
+
+        <div class="controls">
+          <div>
+            <textarea rows="6" class="size-l ng-pristine ng-untouched ng-valid" ng-model="message.value" name="message">アプリをインストールしている端末に入力されたメッセージでプッシュ通知を送信します。</textarea>
+            <a class="inline-btn hide" ng-show="$index &gt; 0 || messages.length &gt;= 2" ng-click="onClickDeleteMessage(message)"><span class="icon close"></span></a>
+          </div>
+
+          <div class="controls-block size-l align-r">
+            <label style="margin-right:15px;" ng-show="$index &gt; 0 || messages.length &gt;= 2" class="hide">
+              <input name="onpreview" value="0" ng-model="$parent.onpreview" ng-change="onSelectPreview(message);" class="ng-pristine ng-untouched ng-valid" checked="checked" type="radio">プレビュー</label>
+          </div>
+        </div>
+
+        <div class="controls">
+          <div class="controls-block size-l align-r">
+            <span>Android残り xxx バイト</span>
+            <span>iOS残り xxx バイト</span>
+          </div>
+        </div>
+        </div>
+      </div><!-- end ngRepeat: message in messages -->
+
+      <div class="controls">
+        <div class="controls-block">
+          <a class="clickable btn size-m" ng-click="onClickAddMessage()">メッセージを追加する</a>
+      </div>
+    </div>
+
+    <!-- 詳細情報 -->
+    <div class="control-group long detail">
+      <div class="control-label" style="width:100%; cursor:pointer;" ng-click="detail=!detail;">
+        <label class="bold"><span ng-show="detail" class="hide">▼</span><span hide="detail" class="">▶</span>&nbsp;詳細情報</label>
+      </div>
+
+      <div class="slide hide" ng-show="detail">
+        <!-- URL -->
+        <div class="control-label">
+          <label class="bold">URL</label><a class="inline-btn" href="javascript:void(0);"><span class="icon question right"><span class="balloon-arrow-bottom-s white ng-binding">プッシュ通知からアプリを起動した際に表示するWebコンテンツのURLを設定できます。</span></span></a>
+        </div>
+        <div class="controls">
+          <input class="size-m ng-pristine ng-untouched ng-valid ng-valid-url ng-valid-pattern" ng-model="push.richUrl" ng-pattern="/https?:\/\/.+/" name="richUrl" type="url">
+        </div>
+        <div class="controls">
+          <div class="controls-block">
+            <a class="clickable btn size-m" ng-click="onClickRte();">HTMLを作成する</a>
+          </div>
+        </div>
+
+        <!-- JSONメッセージ -->
+        <div class="control-label">
+          <label class="bold">JSON</label><a class="inline-btn" href="javascript:void(0);"><span class="icon question right"><span class="balloon-arrow-bottom-s white ng-binding">JSONデータを記述することで、push通知をカスタマイズできます。</span></span></a>
+        </div>
+
+        <div class="controls">
+          <!-- ngRepeat: json in jsons --><div class="control-message box-s json clearfix ng-scope" style="display:block;" ng-repeat="json in jsons">
+            <div class="closebox">
+              <a class="inline-btn" ng-click="onClickDeleteJson(json)"><span class="icon close"></span></a>
+            </div>
+            <div class="item">
+              <input name="action" placeholder="Key" class="key ng-pristine ng-untouched ng-valid" ng-model="json.key" value="key1" type="text">
+              <span class="ng-scope">
+                  <select ng-model="json.type" class="ng-pristine ng-untouched ng-valid">
+                    <option value="string" selected="selected">文字列</option>
+                    <option value="number">数値</option>
+                    <option value="boolean">真偽値</option>
+                  </select>
+                </span>
+              <input placeholder="Value" class="value ng-pristine ng-untouched ng-valid" ng-show="json.type == 'string'" ng-model="json.value" value="文字列の値１" type="text">
+              <input placeholder="Value" class="value number ng-pristine ng-untouched ng-valid hide" ng-show="json.type == 'number'" ng-model="json.value" value="文字列の値１" type="text">
+              <!-- ngIf: json.type === 'number' -->
+              <span ng-show="json.type == 'boolean'" class="value hide">
+                  <label><input name="badgeType" value="true" ng-model="json.value" class="ng-pristine ng-untouched ng-valid" type="radio">True</label>
+                  &nbsp;
+                  <label><input name="badgeType" value="false" ng-model="json.value" class="ng-pristine ng-untouched ng-valid" type="radio">False</label>
+                </span>
+            </div>
+          </div><!-- end ngRepeat: json in jsons --><div class="control-message box-s json clearfix ng-scope" style="display:block;" ng-repeat="json in jsons">
+            <div class="closebox">
+              <a class="inline-btn" ng-click="onClickDeleteJson(json)"><span class="icon close"></span></a>
+            </div>
+            <div class="item">
+              <input name="action" placeholder="Key" class="key ng-pristine ng-untouched ng-valid" ng-model="json.key" value="key2" type="text">
+              <span class="ng-scope">
+                  <select ng-model="json.type" class="ng-pristine ng-untouched ng-valid">
+                    <option value="string">文字列</option>
+                    <option value="number" selected="selected">数値</option>
+                    <option value="boolean">真偽値</option>
+                  </select>
+                </span>
+              <input placeholder="Value" class="value ng-pristine ng-untouched ng-valid hide" ng-show="json.type == 'string'" ng-model="json.value" value="12345" type="text">
+              <input placeholder="Value" class="value number ng-pristine ng-untouched ng-valid" ng-show="json.type == 'number'" ng-model="json.value" value="12345" type="text">
+              <!-- ngIf: json.type === 'number' --><span class="controls-inline error-message ng-scope hide" ng-if="json.type === 'number'" ng-show="false">数値を入力してください。</span><!-- end ngIf: json.type === 'number' -->
+              <span ng-show="json.type == 'boolean'" class="value hide">
+                  <label><input name="badgeType" value="true" ng-model="json.value" class="ng-pristine ng-untouched ng-valid" type="radio">True</label>
+                  &nbsp;
+                  <label><input name="badgeType" value="false" ng-model="json.value" class="ng-pristine ng-untouched ng-valid" type="radio">False</label>
+                </span>
+            </div>
+          </div><!-- end ngRepeat: json in jsons --><div class="control-message box-s json clearfix ng-scope" style="display:block;" ng-repeat="json in jsons">
+            <div class="closebox">
+              <a class="inline-btn" ng-click="onClickDeleteJson(json)"><span class="icon close"></span></a>
+            </div>
+            <div class="item">
+              <input name="action" placeholder="Key" class="key ng-pristine ng-untouched ng-valid" ng-model="json.key" value="key3" type="text">
+              <span class="ng-scope">
+                  <select ng-model="json.type" class="ng-pristine ng-untouched ng-valid">
+                    <option value="string">文字列</option>
+                    <option value="number">数値</option>
+                    <option value="boolean" selected="selected">真偽値</option>
+                  </select>
+                </span>
+              <input placeholder="Value" class="value ng-pristine ng-untouched ng-valid hide" ng-show="json.type == 'string'" ng-model="json.value" value="false" type="text">
+              <input placeholder="Value" class="value number ng-pristine ng-untouched ng-valid hide" ng-show="json.type == 'number'" ng-model="json.value" value="false" type="text">
+              <!-- ngIf: json.type === 'number' -->
+              <span ng-show="json.type == 'boolean'" class="value">
+                  <label><input name="badgeType" value="true" ng-model="json.value" class="ng-pristine ng-untouched ng-valid" type="radio">True</label>
+                  &nbsp;
+                  <label><input name="badgeType" value="false" ng-model="json.value" class="ng-pristine ng-untouched ng-valid" type="radio">False</label>
+                </span>
+            </div>
+          </div><!-- end ngRepeat: json in jsons -->
+          <div class="controls-block">
+            <a class="clickable btn size-m" ng-click="onClickAddJson()">JSONデータを追加する</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 配信日時 -->
+    <div class="control-group long">
+      <div class="control-label">
+        <label class="bold">配信日時</label><a class="inline-btn" href="javascript:void(0);"><span class="icon question right"><span class="balloon-arrow-bottom-s white ng-binding">プッシュ通知を配信する時間を指定できます。</span></span></a>
+      </div>
+
+      <!-- ngRepeat: deliveryTime in deliveryTimes --><div class="controls ng-scope" ng-repeat="deliveryTime in deliveryTimes">
+        <div class="control-message box-s">
+          <select ng-model="deliveryTime.immediateDelivery" class="ng-pristine ng-untouched ng-valid">
+            <option value="" selected="selected">今すぐ配信</option>
+            <option value="1">日時</option>
+          </select>
+          <a class="inline-btn hide" ng-show="$index &gt; 0 || deliveryTimes.length &gt;= 2" ng-click="onClickDeleteDeliveryTime(deliveryTime)"><span class="icon close"></span></a>
+
+          <div class="controls-block hide" ng-show="deliveryTime.immediateDelivery === '1'">
+            <input class="input-date ng-pristine ng-untouched ng-valid" name="deliveryDate" ng-model="deliveryDate" onchange="
+                    angular.element(this).scope().deliveryDate = this.value;
+                    angular.element(this).scope().$apply();
+                  " placeholder="2016年03月03日" style="background-color: #f5f4e7;" type="text">
+            <button type="button" class="ui-datepicker-trigger"><span class="icon calendar black"></span></button>
+
+            <select class="time-select ng-pristine ng-untouched ng-valid" ng-model="deliveryHour" ng-options="_v for _v in [] | range:0:23"><option value="?" selected="selected"></option><option label="0" value="number:0">0</option><option label="1" value="number:1">1</option><option label="2" value="number:2">2</option><option label="3" value="number:3">3</option><option label="4" value="number:4">4</option><option label="5" value="number:5">5</option><option label="6" value="number:6">6</option><option label="7" value="number:7">7</option><option label="8" value="number:8">8</option><option label="9" value="number:9">9</option><option label="10" value="number:10">10</option><option label="11" value="number:11">11</option><option label="12" value="number:12">12</option><option label="13" value="number:13">13</option><option label="14" value="number:14">14</option><option label="15" value="number:15">15</option><option label="16" value="number:16">16</option><option label="17" value="number:17">17</option><option label="18" value="number:18">18</option><option label="19" value="number:19">19</option><option label="20" value="number:20">20</option><option label="21" value="number:21">21</option><option label="22" value="number:22">22</option><option label="23" value="number:23">23</option></select>
+            :
+            <select class="time-select ng-pristine ng-untouched ng-valid" ng-model="deliveryMinute" ng-options="_v for _v in [] | range:0:59"><option value="?" selected="selected"></option><option label="0" value="number:0">0</option><option label="1" value="number:1">1</option><option label="2" value="number:2">2</option><option label="3" value="number:3">3</option><option label="4" value="number:4">4</option><option label="5" value="number:5">5</option><option label="6" value="number:6">6</option><option label="7" value="number:7">7</option><option label="8" value="number:8">8</option><option label="9" value="number:9">9</option><option label="10" value="number:10">10</option><option label="11" value="number:11">11</option><option label="12" value="number:12">12</option><option label="13" value="number:13">13</option><option label="14" value="number:14">14</option><option label="15" value="number:15">15</option><option label="16" value="number:16">16</option><option label="17" value="number:17">17</option><option label="18" value="number:18">18</option><option label="19" value="number:19">19</option><option label="20" value="number:20">20</option><option label="21" value="number:21">21</option><option label="22" value="number:22">22</option><option label="23" value="number:23">23</option><option label="24" value="number:24">24</option><option label="25" value="number:25">25</option><option label="26" value="number:26">26</option><option label="27" value="number:27">27</option><option label="28" value="number:28">28</option><option label="29" value="number:29">29</option><option label="30" value="number:30">30</option><option label="31" value="number:31">31</option><option label="32" value="number:32">32</option><option label="33" value="number:33">33</option><option label="34" value="number:34">34</option><option label="35" value="number:35">35</option><option label="36" value="number:36">36</option><option label="37" value="number:37">37</option><option label="38" value="number:38">38</option><option label="39" value="number:39">39</option><option label="40" value="number:40">40</option><option label="41" value="number:41">41</option><option label="42" value="number:42">42</option><option label="43" value="number:43">43</option><option label="44" value="number:44">44</option><option label="45" value="number:45">45</option><option label="46" value="number:46">46</option><option label="47" value="number:47">47</option><option label="48" value="number:48">48</option><option label="49" value="number:49">49</option><option label="50" value="number:50">50</option><option label="51" value="number:51">51</option><option label="52" value="number:52">52</option><option label="53" value="number:53">53</option><option label="54" value="number:54">54</option><option label="55" value="number:55">55</option><option label="56" value="number:56">56</option><option label="57" value="number:57">57</option><option label="58" value="number:58">58</option><option label="59" value="number:59">59</option></select>
+
+            <span class="controls-inline error-message hide" ng-show="pushForm.deliveryDate.$error.pastDate">未来の日付を設定してください。</span>
+            <span class="controls-inline error-message hide" ng-show="pushForm.deliveryDate.$error.invalidFormat">日付を正しく入力してください。</span>
+          </div>
+        </div>
+      </div><!-- end ngRepeat: deliveryTime in deliveryTimes -->
+
+      <div class="controls">
+        <div class="controls-block">
+          <a class="clickable btn size-m" ng-click="onClickAddDeliveryTime()">配信日時を追加する</a>
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="control-group long">
+      <div class="control-label">
+        <label class="bold">配信期限</label><a class="inline-btn" href="javascript:void(0);"><span class="icon question right"><span class="balloon-arrow-bottom-s white ng-binding">電源が切れているデバイスやインターネットに接続していない端末にプッシュ通知を再送する期限を設定できます。</span></span></a></div>
+
+      <!-- 配信期限 -->
+      <div class="controls">
+        <select ng-model="deliveryExpiration" name="deliveryExpiration" class="ng-pristine ng-untouched ng-valid">
+          <option value="" selected="selected">指定なし</option>
+          <option value="0">期間</option>
+          <option value="1">日時</option>
+        </select>
+
+        <div>
+          <div class="controls-block hide" ng-show="deliveryExpiration == '0'">
+            <select class="time-select ng-pristine ng-untouched ng-valid" hide="deliveryExpirationTimeType === 'hour'" ng-model="deliveryExpirationTime" ng-options="_v for _v in [] | range:0:28"><option value="?" selected="selected"></option><option label="0" value="number:0">0</option><option label="1" value="number:1">1</option><option label="2" value="number:2">2</option><option label="3" value="number:3">3</option><option label="4" value="number:4">4</option><option label="5" value="number:5">5</option><option label="6" value="number:6">6</option><option label="7" value="number:7">7</option><option label="8" value="number:8">8</option><option label="9" value="number:9">9</option><option label="10" value="number:10">10</option><option label="11" value="number:11">11</option><option label="12" value="number:12">12</option><option label="13" value="number:13">13</option><option label="14" value="number:14">14</option><option label="15" value="number:15">15</option><option label="16" value="number:16">16</option><option label="17" value="number:17">17</option><option label="18" value="number:18">18</option><option label="19" value="number:19">19</option><option label="20" value="number:20">20</option><option label="21" value="number:21">21</option><option label="22" value="number:22">22</option><option label="23" value="number:23">23</option><option label="24" value="number:24">24</option><option label="25" value="number:25">25</option><option label="26" value="number:26">26</option><option label="27" value="number:27">27</option><option label="28" value="number:28">28</option></select>
+            <select class="time-select ng-pristine ng-untouched ng-valid hide" ng-show="deliveryExpirationTimeType === 'hour'" ng-model="deliveryExpirationTime" ng-options="_v for _v in [] | range:0:23"><option value="?" selected="selected"></option><option label="0" value="number:0">0</option><option label="1" value="number:1">1</option><option label="2" value="number:2">2</option><option label="3" value="number:3">3</option><option label="4" value="number:4">4</option><option label="5" value="number:5">5</option><option label="6" value="number:6">6</option><option label="7" value="number:7">7</option><option label="8" value="number:8">8</option><option label="9" value="number:9">9</option><option label="10" value="number:10">10</option><option label="11" value="number:11">11</option><option label="12" value="number:12">12</option><option label="13" value="number:13">13</option><option label="14" value="number:14">14</option><option label="15" value="number:15">15</option><option label="16" value="number:16">16</option><option label="17" value="number:17">17</option><option label="18" value="number:18">18</option><option label="19" value="number:19">19</option><option label="20" value="number:20">20</option><option label="21" value="number:21">21</option><option label="22" value="number:22">22</option><option label="23" value="number:23">23</option></select>
+            <select ng-model="deliveryExpirationTimeType" class="span2 ng-pristine ng-untouched ng-valid">
+              <option value="" selected="selected">日</option>
+              <option value="hour">時間</option>
+            </select>
+
+            <span class="controls-inline error-message hide" ng-show="pushForm.deliveryExpiration.$error.maxExpiration">配信期限は28日間までしか指定出来ません</span>
+          </div>
+
+          <div class="controls-block hide" ng-show="deliveryExpiration == '1'">
+
+            <input class="input-date ng-pristine ng-untouched ng-valid" ng-model="deliveryExpirationDate" name="deliveryExpirationDate" ng-init="setupDatePickers()" onchange="
+                  angular.element(this).scope().deliveryExpirationDate = this.value;
+                  angular.element(this).scope().$apply();
+                " placeholder="2016年03月03日" type="text">
+            <button type="button" class="ui-datepicker-trigger"><span class="icon calendar black"></span></button>
+
+            <select class="time-select ng-pristine ng-untouched ng-valid" ng-model="deliveryExpirationHour" ng-options="_v for _v in [] | range:0:23"><option value="?" selected="selected"></option><option label="0" value="number:0">0</option><option label="1" value="number:1">1</option><option label="2" value="number:2">2</option><option label="3" value="number:3">3</option><option label="4" value="number:4">4</option><option label="5" value="number:5">5</option><option label="6" value="number:6">6</option><option label="7" value="number:7">7</option><option label="8" value="number:8">8</option><option label="9" value="number:9">9</option><option label="10" value="number:10">10</option><option label="11" value="number:11">11</option><option label="12" value="number:12">12</option><option label="13" value="number:13">13</option><option label="14" value="number:14">14</option><option label="15" value="number:15">15</option><option label="16" value="number:16">16</option><option label="17" value="number:17">17</option><option label="18" value="number:18">18</option><option label="19" value="number:19">19</option><option label="20" value="number:20">20</option><option label="21" value="number:21">21</option><option label="22" value="number:22">22</option><option label="23" value="number:23">23</option></select>
+            :
+            <select class="time-select ng-pristine ng-untouched ng-valid" ng-model="deliveryExpirationMinute" ng-options="_v for _v in [] | range:0:59"><option value="?" selected="selected"></option><option label="0" value="number:0">0</option><option label="1" value="number:1">1</option><option label="2" value="number:2">2</option><option label="3" value="number:3">3</option><option label="4" value="number:4">4</option><option label="5" value="number:5">5</option><option label="6" value="number:6">6</option><option label="7" value="number:7">7</option><option label="8" value="number:8">8</option><option label="9" value="number:9">9</option><option label="10" value="number:10">10</option><option label="11" value="number:11">11</option><option label="12" value="number:12">12</option><option label="13" value="number:13">13</option><option label="14" value="number:14">14</option><option label="15" value="number:15">15</option><option label="16" value="number:16">16</option><option label="17" value="number:17">17</option><option label="18" value="number:18">18</option><option label="19" value="number:19">19</option><option label="20" value="number:20">20</option><option label="21" value="number:21">21</option><option label="22" value="number:22">22</option><option label="23" value="number:23">23</option><option label="24" value="number:24">24</option><option label="25" value="number:25">25</option><option label="26" value="number:26">26</option><option label="27" value="number:27">27</option><option label="28" value="number:28">28</option><option label="29" value="number:29">29</option><option label="30" value="number:30">30</option><option label="31" value="number:31">31</option><option label="32" value="number:32">32</option><option label="33" value="number:33">33</option><option label="34" value="number:34">34</option><option label="35" value="number:35">35</option><option label="36" value="number:36">36</option><option label="37" value="number:37">37</option><option label="38" value="number:38">38</option><option label="39" value="number:39">39</option><option label="40" value="number:40">40</option><option label="41" value="number:41">41</option><option label="42" value="number:42">42</option><option label="43" value="number:43">43</option><option label="44" value="number:44">44</option><option label="45" value="number:45">45</option><option label="46" value="number:46">46</option><option label="47" value="number:47">47</option><option label="48" value="number:48">48</option><option label="49" value="number:49">49</option><option label="50" value="number:50">50</option><option label="51" value="number:51">51</option><option label="52" value="number:52">52</option><option label="53" value="number:53">53</option><option label="54" value="number:54">54</option><option label="55" value="number:55">55</option><option label="56" value="number:56">56</option><option label="57" value="number:57">57</option><option label="58" value="number:58">58</option><option label="59" value="number:59">59</option></select>
+
+            <span class="controls-inline error-message hide" ng-show="pushForm.deliveryExpiration.$error.maxExpiration">配信期限は28日間までしか指定出来ません</span>
+
+            <span class="controls-inline error-message hide" ng-show="pushForm.deliveryExpiration.$error.pastDate">未来の日付を設定してください。</span>
+            <span class="controls-inline error-message hide" ng-show="pushForm.deliveryExpirationDate.$error.invalidFormat">日付を正しく入力してください。</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="control-group long">
+      <!--<div class="control-label"><label class="bold">ターゲット</label></div>-->
+
+      <!-- 配信期限 -->
+      <div class="controls">
+
+        <!-- androidに配信するかどうか -->
+        <div class="controls-block">
+          <label>
+            <input ng-model="forAndroid" name="forAndroid" class="ng-pristine ng-untouched ng-valid" type="checkbox"> Android端末に配信する</label>
+          <span class="controls-inline error-message hide" ng-show="pushForm.forAndroid.$dirty &amp;&amp; pushForm.forAndroid.$invalid">どちらかを有効にしてください。</span>
+        </div>
+
+        <!-- androidに配信する場合のオプション -->
+        <div class="control-message box hide" ng-show="forAndroid">
+          <div class="control-group long">
+            <div class="control-label">
+              <label class="bold">アクション</label><a class="inline-btn" href="javascript:void(0);"><span class="icon question right"><span class="balloon-arrow-bottom-s white ng-binding">Android端末への配信を行う際の、受信処理を担うカスタムレシーバの指定が可能です</span></span></a></div>
+            <div class="controls">
+              <input name="action" placeholder="" class="size-m ng-pristine ng-untouched ng-valid ng-valid-pattern" ng-model="push.action" ng-pattern="/^(([a-zA-Z0-9_]+\.)*[a-zA-Z0-9_]+|)$/" type="text">
+              <span class="controls-inline error-message hide" ng-show="pushForm.$dirty &amp;&amp; pushForm.action.$error.pattern">正しく入力してください。</span>
+            </div>
+          </div>
+
+          <div class="control-group long">
+            <div class="control-label">
+              <label class="bold">ダイアログ</label><a class="inline-btn" href="javascript:void(0);"><span class="icon question right"><span class="balloon-arrow-bottom-s white ng-binding">Android端末へ配信する際に、プッシュ通知のダイアログ表示を有効にします。</span></span></a></div>
+            <div class="controls">
+              <label>
+                <input name="dialog" ng-model="push.dialog" class="ng-pristine ng-untouched ng-valid" type="checkbox">ダイアログ表示を有効にする</label>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- iOSに配信するかどうか -->
+        <div class="controls-block">
+          <label>
+            <input ng-model="forIos" name="forIos" class="ng-pristine ng-untouched ng-valid" type="checkbox"> iOS端末に配信する</label>
+          <span class="controls-inline error-message hide" ng-show="pushForm.forIos.$dirty &amp;&amp; pushForm.forIos.$invalid">どちらかを有効にしてください。</span>
+        </div>
+
+        <!-- iOSに配信する場合のオプション -->
+        <div class="control-message box hide" ng-show="forIos">
+          <div class="control-group long">
+            <div class="control-label">
+              <label class="bold">バッジ件数</label><a class="inline-btn" href="javascript:void(0);"><span class="icon question right"><span class="balloon-arrow-bottom-s white ng-binding">iOS端末への配信を行う際の、バッジ件数の指定（固定値の指定もしくは値の増加）が可能です。</span></span></a></div>
+            <div class="controls control-badge-settings">
+              <label>
+                <input name="badgeType" ng-model="badgeType" class="ng-pristine ng-untouched ng-valid" checked="checked" type="radio">指定しない</label>
+              <label>
+                <input name="badgeType" type="radio">インクリメントする</label>
+              <label>
+                <input name="badgeType" type="radio">数値を指定する</label>
+              <!-- ngIf: badgeType === badgeTypes.input --><input placeholder="" name="badgeSetting" class="size-ss ng-pristine ng-untouched ng-valid ng-scope ng-valid-pattern" ng-pattern="/^\d+$/" ng-if="badgeType === badgeTypes.input" ng-model="push.badgeSetting" type="text"><!-- end ngIf: badgeType === badgeTypes.input -->
+              <span class="controls-inline error-message hide" ng-show="pushForm.$dirty &amp;&amp; (pushForm.badgeSetting.$error.invalidState || pushForm.badgeSetting.$error.pattern)">バッジ件数には2147483647以下の数字を指定してください。</span>
+              <br>
+              <span class="controls-inline error-message hide" ng-show="pushForm.badgeType.$error.invalidState">content-availableとバッジ件数は片方だけ設定してください。</span>
+            </div>
+          </div>
+
+          <div class="control-group long">
+            <div class="control-label">
+              <label class="bold">音声ファイル名</label><a class="inline-btn" href="javascript:void(0);"><span class="icon question right"><span class="balloon-arrow-bottom-s white ng-binding">iOS端末への配信を行う際の、通知音設定が可能です。</span></span></a></div>
+            <div class="controls">
+              <input placeholder="" class="size-l ng-pristine ng-untouched ng-valid" ng-model="push.sound" type="text">
+              <div class="controls-block size-l align-r">省略可</div>
+            </div>
+          </div>
+
+          <div class="control-group long">
+            <div class="control-label">
+              <label class="bold">カテゴリ</label><a class="inline-btn" href="javascript:void(0);"><span class="icon question right"><span class="balloon-arrow-bottom-s white ng-binding">iOS端末への配信を行う際の、カテゴリ設定が可能です。</span></span></a></div>
+            <div class="controls">
+              <input placeholder="" class="size-l ng-pristine ng-untouched ng-valid" ng-model="push.category" type="text">
+              <div class="controls-block size-l align-r">省略可</div>
+            </div>
+          </div>
+
+          <div class="control-group long">
+            <div class="control-label">
+              <label class="bold">content-available</label><a class="inline-btn" href="javascript:void(0);"><span class="icon question right"><span class="balloon-arrow-bottom-s white ng-binding">iOS端末への配信を行う際の、News Standへの送信設定が可能です。</span></span></a></div>
+            <div class="controls">
+              <select>
+                <option value="有効にする">有効にする</option>
+                <option selected="selected" value="無効にする">無効にする</option>
+              </select>
+              <span class="controls-inline error-message hide" ng-show="pushForm.contentAvailable.$error.invalidState">content-availableとバッジ件数は片方だけ設定してください。</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="control-group long">
+      <!-- パーミッション -->
+      <div class="control-label">
+        <label class="bold">パーミッション</label><a class="inline-btn" href="javascript:void(0);"><span class="icon question right"><span class="balloon-arrow-bottom-s white ng-binding">プッシュ通知に対してパーミッションを設定することで、プッシュ通知を編集できる権限を管理できます</span></span></a></div>
+      <div class="controls">
+        <div class="controls-block">
+          <a class="clickable btn size-m" ng-click="onClickPermissionButton()">パーミッションを設定する</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="control-group long">
+      <!-- 配信端末の絞り込み -->
+      <div class="control-label">
+        <label class="bold">配信端末</label><a class="inline-btn" href="javascript:void(0);"><span class="icon question right"><span class="balloon-arrow-bottom-s white ng-binding">プッシュ通知の配信端末を選択することができます。installationクラスに格納されている端末から絞り込みも可能です。</span></span></a></div>
+      <div class="controls">
+        <select ng-model="searchConditionSelect" class="ng-pristine ng-untouched ng-valid">
+          <option value="" selected="selected">installationクラスのすべての端末</option>
+          <option value="10">男性</option>
+          <option value="20">女性</option>
+          <option value="30">10代</option>
+          <option value="40">20代</option>
+          <option value="50">30代</option>
+          <option value="60">40代</option>
+          <option value="70">50代</option>
+          <option value="80">60歳以上</option>
+          <option value="90">女性：20歳以下</option>
+          <option value="100">女性：20歳以上40歳未満</option>
+          <option value="110">女性：40歳以上</option>
+          <option value="120">男性：20歳以下</option>
+          <option value="130">男性：20歳以上40歳未満</option>
+          <option value="140">男性：40歳以上</option>
+          <option value="1">installationクラスから絞込み</option>
+        </select>
+        &nbsp;
+        <a class="clickable btn size-m" ng-click="onClickCreateSegment()">新しいセグメントを作成する</a>
+      </div>
+
+    </div>
+
+    <!-- 絞り込み条件 -->
+    <div class="control-group long hide" ng-show="searchConditionSelect == '1'">
+
+      <div class="controls">
+        <div class="control-message box-s">
+          <div class="item">
+            <select>
+              <option value="0" selected="selected">applicationName</option>
+              <option value="1">appVersion</option>
+              <option value="2">badge</option>
+              <option value="3">channels</option>
+              <option value="4">deviceToken</option>
+              <option value="5">sdkVersion</option>
+              <option value="6">timeZone</option>
+              <option value="7">acl</option>
+              <option value="8">objectId</option>
+              <option value="9">createDate</option>
+              <option value="10">updateDate</option>
+            </select>
+            <span class="ng-scope">
+              <span>が</span>
+            <input size="15" class="ng-valid ng-dirty" type="text">
+            <select>
+              <option value="string" selected="selected">文字列</option>
+              <option value="array">配列</option>
+              <option value="number">数値</option>
+              <option value="date">日付</option>
+              <option value="boolean">真偽値</option>
+              <option value="geopoint">緯度経度</option>
+              <option value="object">オブジェクト</option>
+            </select>
+            <select>
+              <option value="0" selected="selected">と同じ</option>
+              <option value="1">ではない</option>
+              <option value="2">のいずれかと同じ</option>
+              <option value="3">のいずれとも違う</option>
+              <option value="4">のいずれかを含む</option>
+              <option value="5">よりも大きい</option>
+              <option value="6">以上</option>
+              <option value="7">よりも小さい</option>
+              <option value="8">以下</option>
+            </select>
+            </span>
+            <a class="inline-btn"><span class="icon close"></span></a>
+          </div>
+        </div>
+        <div class="control-message box-s">
+          <div class="item">
+            <select>
+              <option value="0" selected="selected">applicationName</option>
+              <option value="1">appVersion</option>
+              <option value="2">badge</option>
+              <option value="3">channels</option>
+              <option value="4">deviceToken</option>
+              <option value="5">sdkVersion</option>
+              <option value="6">timeZone</option>
+              <option value="7">acl</option>
+              <option value="8">objectId</option>
+              <option value="9">createDate</option>
+              <option value="10">updateDate</option>
+            </select>
+            <span class="ng-scope">
+              <span>が</span>
+            <input size="15" class="ng-valid ng-dirty" type="text">
+            <select>
+              <option value="string" selected="selected">文字列</option>
+              <option value="array">配列</option>
+              <option value="number">数値</option>
+              <option value="date">日付</option>
+              <option value="boolean">真偽値</option>
+              <option value="geopoint">緯度経度</option>
+              <option value="object">オブジェクト</option>
+            </select>
+            <select>
+              <option value="0" selected="selected">と同じ</option>
+              <option value="1">ではない</option>
+              <option value="2">のいずれかと同じ</option>
+              <option value="3">のいずれとも違う</option>
+              <option value="4">のいずれかを含む</option>
+              <option value="5">よりも大きい</option>
+              <option value="6">以上</option>
+              <option value="7">よりも小さい</option>
+              <option value="8">以下</option>
+            </select>
+            </span>
+            <a class="inline-btn"><span class="icon close"></span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 条件の追加 -->
+    <div class="control-group long hide" ng-show="searchConditionSelect == '1'">
+      <div class="controls">
+        <div class="controls-block"><a ng-click="narrowing.addCondition()" class="btn size-m"><span class="icon add-refined black left"></span>条件の追加</a></div>
+      </div>
+    </div>
+
+    <!-- 条件の追加 -->
+    <div class="control-group long hide" ng-show="userSearchConditionSelect == '1'" style="display:none;">
+      <div class="controls">
+        <div class="controls-block"><a ng-click="userNarrowing.addCondition()" ng-show="userNarrowing.canAddNewCondition()" class="btn size-m hide"><span class="icon add-refined black left"></span>条件の追加</a></div>
+      </div>
+    </div>
+    <!-- #### -->
+
+    <!-- push通知が届く端末の数 -->
+    <div class="control-group long">
+      <div class="controls">
+        <div class="control-message green" ng-show="true">
+          <p ng-show="loadingDeliveryCount" style="display:none;" class="hide">
+            <span class="icon loading"></span>
+            <span>配信予定端末数</span>
+          </p>
+          <div hide="loadingDeliveryCount" class="">
+            <p hide="deliveryCount" class="hide"><span>送信される端末がありません</span></p>
+            <p ng-show="deliveryCount" class=""><span class="icon device-notice colored left"></span>
+              <span class="fontL ng-binding">9,532</span> 端末に向けて送信されます
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="module02">
+      <div class="module-content">
+        <div class="control-group long">
+          <div class="controls">
+            <div class="controls-block">
+              <div ng-show="true" ng-click="onClickTestButton();" class="btn green size-m">テスト配信</div>
+              <div ng-show="true" ng-click="onClickSaveButton();" class="btn green size-m">下書き保存</div>
+              <div ng-show="true" ng-click="onClickPushButton();" class="btn green size-m">プッシュ通知を作成する</div>
+              <span style="margin-left:10px">配信パターン数：<span class="fontL ng-binding" style="font-size: 1.44em;font-weight: bold;">1</span>
+              <span class="controls-inline error-message hide" ng-show="tried &amp;&amp; pushForm.$invalid">入力内容を確認してください</span>
+            </span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <br><br>社内問い合わせ先：supportpush@syanai.co.jp</div>
+</form>
+</pushform>
+      </div>
+    </div>
+  </div>
+
+  <div id="confirm-attention" class="modal-wrap" style="display:none;">
+    <dl class="modal-content">
+      <dt class="title"><span>確認</span></dt>
+      <dd class="text-normal">
+        <p>プッシュ通知を作成しますか？</p>
+      </dd>
+      <dd class="area-button">
+        <button class="btn gray" onclick="javascript:$.fancybox.close();">キャンセル</button>
+        <button ng-click="savePush();" class="btn green"><span class="text">作成する</span></button>
+      </dd>
+    </dl>
+  </div>
+
+</div></div>
+    </div>
+
+    <footer class="reset footer"><div class="inner">
+  <ul class="footer-menu">
+<li><a href="http://mb.cloud.nifty.com/" target="_blank">ニフティクラウド mobile backend サイトへ戻る</a></li>    <li><a href="#">お問い合わせ</a></li>
+  <p class="copy">©NIFTY Corporation</p>
+</ul></div>
+</footer>
+
+    <!--[if lt IE 9]>
+    <script src="bower_components/es5-shim/es5-shim.js"></script>
+    <script src="bower_components/json3/lib/json3.min.js"></script>
+    <![endif]-->
+    <script src="assets/app.js"></script>
+    <script src="assets/zempo.min.js"></script>
+</body></html>
