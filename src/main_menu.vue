@@ -8,13 +8,13 @@
         </router-link>
       </li>
       <li ng-show="true" class="">
-      <router-link to="/new" active-class="stay">
+      <router-link to="./new" active-class="stay">
         <span class="icon gnavi-pushinfo"></span>
         <span class="text">プッシュ作成</span>
       </router-link>
       </li>
       <li class="app-settings" ng-show="true">
-        <router-link to="/config" active-class="stay">
+        <router-link to="./config" active-class="stay">
           <span class="icon gnavi-appset"></span>
           <span class="text">アプリ設定</span>
         </router-link>
