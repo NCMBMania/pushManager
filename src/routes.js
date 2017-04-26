@@ -2,9 +2,11 @@ let mainContent = require('./main_content.vue');
 let configForm = require('./config_form.vue');
 let pushForm   = require('./push_form.vue');
 
+let path = document.location.pathname;
+
 const routes = [
   {
-    path: '/', component: mainContent,
+    path: path, component: mainContent,
     children: [
       {
         path: '', 
@@ -13,7 +15,7 @@ const routes = [
     ]
   },
   {
-    path: '/config', component: mainContent,
+    path: `${path}config`, component: mainContent,
     children: [
       {
         path: '', 
@@ -22,7 +24,7 @@ const routes = [
     ]
   },
   {
-    path: '/new', component: mainContent,
+    path: `${path}new`, component: mainContent,
     children: [
       {
         path: '', 
