@@ -8,6 +8,14 @@
       v-on:closeModal="closeModal"
       v-if="modal == 'configManager'" 
     />
+    <installation-manager
+      id="installation-manager"
+      :ncmb="ncmb"
+      v-on:errorMessage="errorMessage"
+      v-on:successMessage="successMessage"
+      v-on:closeModal="closeModal"
+      v-if="modal == 'installationManager'" 
+    />
     <vue-header :ncmb="ncmb" :success="success" :error="error"></vue-header>
     <router-view :ncmb="ncmb" 
       v-on:updateKeys="updateKeys" 
@@ -38,7 +46,8 @@ export default {
   components: {
     'vue-header': require('./header.vue'),
     'vue-footer': require('./footer.vue'),
-    'config-manager': require('./config_manager.vue')
+    'config-manager': require('./config_manager.vue'),
+    'installation-manager': require('./installation_manager.vue')
   },
   methods: {
     message_clear: function(type, message, msec) {
@@ -46,7 +55,7 @@ export default {
       me[type] = message;
       setTimeout(() => {
         me[type] = null;
-      }, 3000);
+      }, msec);
     },
     updateKeys: function(application_key, client_key) {
       this.ncmb = new NCMB(application_key, client_key);
@@ -65,6 +74,7 @@ export default {
         })
     },
     showModal: function(modal) {
+      console.log('showModal')
       this.modal = modal;
     },
     closeModal: function() {

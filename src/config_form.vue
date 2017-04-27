@@ -8,7 +8,7 @@
         <div class="control-group list">
           <div class="control-label"><span class="text">テスト配信端末</span></div>
           <div class="controls">
-            <a class="btn" ng-click="onClickTest()"><span class="icon left gear"></span><span class="text">テスト配信端末の管理</span></a>
+            <a class="btn" @click="showInstallationModal"><span class="icon left gear"></span><span class="text">テスト配信端末の管理</span></a>
           </div>
         </div>
       </div>
@@ -57,13 +57,9 @@
 <script>
 const Vue = require('Vue');
 module.exports = {
-  components: {
-  'config-manager': require('./config_manager.vue')
-  },
   data: function() {
     let data = {
-      application_key: null, client_key: null,
-      configManagerModal: false
+      application_key: null, client_key: null
     };
     if (this.ncmb) {
       data.application_key =  this.ncmb.apikey;
@@ -80,6 +76,9 @@ module.exports = {
     },
     showManagerModal: function(e) {
       this.$emit('showModal', 'configManager');
+    },
+    showInstallationModal: function(e) {
+      this.$emit('showModal', 'installationManager');
     }
   }
 }

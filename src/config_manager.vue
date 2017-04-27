@@ -24,7 +24,7 @@
                 <th style="text-align:center; width:30px;">
                   <input type="checkbox" v-if="managers.length > 0" @click="checkAll">
                 </th>
-                <th width="220">承認者1</th>
+                <th width="220">承認者</th>
                 <th>備考</th>
                 <th>&nbsp;</th>
               </tr>
