@@ -2,8 +2,8 @@
   <span>
     <div class="app-name">
       <div class="inner">
-        <span class="text">niftyapp&nbsp;</span>
-        <span class="icon arrow-updown white hide"></span>
+        <span class="text">プッシュ管理</span>
+        <span class="icon arrow-updown white"></span>
       </div>
     </div>
     <div class="app-menu">

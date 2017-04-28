@@ -84,6 +84,11 @@ module.exports = {
     return data;
   },
   created: function() {
+    if (!this.ncmb.User.getCurrentUser()) {
+      this.cancel();
+      this.$emit('showModal', "signinForm");
+      return;
+    }
     window.addEventListener('keyup', this.cancel);
     this.updateList();
   },

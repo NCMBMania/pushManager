@@ -6,6 +6,7 @@
       v-on:errorMessage="errorMessage"
       v-on:successMessage="successMessage"
       v-on:closeModal="closeModal"
+      v-on:showModal="showModal"
       v-if="modal == 'configManager'" 
     />
     <installation-manager
@@ -14,9 +15,25 @@
       v-on:errorMessage="errorMessage"
       v-on:successMessage="successMessage"
       v-on:closeModal="closeModal"
+      v-on:showModal="showModal"
       v-if="modal == 'installationManager'" 
     />
-    <vue-header :ncmb="ncmb" :success="success" :error="error"></vue-header>
+    <signin-form
+      id="installation-manager"
+      :ncmb="ncmb"
+      v-on:errorMessage="errorMessage"
+      v-on:successMessage="successMessage"
+      v-on:closeModal="closeModal"
+      v-on:login="login"
+      v-if="modal == 'signinForm'" 
+    />
+    <vue-header
+      :ncmb="ncmb"
+      :success="success"
+      :error="error"
+      v-on:showModal="showModal"
+      v-on:logout="logout"
+    />
     <router-view :ncmb="ncmb" 
       v-on:updateKeys="updateKeys" 
       v-on:showModal="showModal"></router-view>
@@ -47,7 +64,8 @@ export default {
     'vue-header': require('./header.vue'),
     'vue-footer': require('./footer.vue'),
     'config-manager': require('./config_manager.vue'),
-    'installation-manager': require('./installation_manager.vue')
+    'installation-manager': require('./installation_manager.vue'),
+    'signin-form': require('./signin_form.vue')
   },
   methods: {
     message_clear: function(type, message, msec) {
@@ -85,6 +103,28 @@ export default {
     },
     successMessage: function(msg) {
       this.message_clear('success', msg, 3000);
+    },
+    login: function(userName, password) {
+      var me = this;
+      this.ncmb.User.login(userName, password)
+        .then(function(user) {
+          me.successMessage("ログイン成功しました");
+          me.closeModal();
+          location.reload();
+        })
+        .catch(function(err) {
+          me.errorMessage("ログイン失敗しました");
+        })
+    },
+    logout: function() {
+      let me = this;
+      this.ncmb.User.logout()
+        .then(() => {
+          location.reload();
+        })
+        .catch(() => {
+          location.reload();
+        });
     }
   },
   render: h => h(App)
