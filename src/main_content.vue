@@ -4,7 +4,14 @@
       <div class="main-area reset ng-scope">
         <main_menu />
         <div class="contents reset">
-          <router-view :ncmb="ncmb" v-on:updateKeys="updateKeys" v-on:showModal="showModal"></router-view>
+          <router-view
+            :ncmb="ncmb" 
+            :permissions="permissions"
+            :segmentations="segmentations"
+            :columns="columns"
+            v-on:updateKeys="updateKeys"
+            v-on:showModal="showModal"
+          />
         </div>
       </div>
     </div>
@@ -13,7 +20,7 @@
 
 <script>
 module.exports = {
-  props: ['ncmb'],
+  props: ['ncmb', 'permissions', 'segmentations', 'columns'],
   components: {
     'main_menu': require('./main_menu.vue'),
     'push-form': require('./push_form.vue'),
@@ -23,8 +30,8 @@ module.exports = {
     updateKeys: function(application_key, client_key) {
       this.$emit('updateKeys', application_key, client_key);
     },
-    showModal: function(modal) {
-      this.$emit('showModal', modal);
+    showModal: function(modal, options) {
+      this.$emit('showModal', modal, options);
     }
   },
 }
