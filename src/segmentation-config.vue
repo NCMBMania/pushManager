@@ -24,15 +24,15 @@
               <option value="object">オブジェクト</option>
             </select>
             <select v-model="segmentation.decision">
-              <option value="" selected="selected">と同じ</option>
-              <option value="$ne">ではない</option>
-              <option value="$in">のいずれかと同じ</option>
-              <option value="$nin">のいずれとも違う</option>
-              <option value="$inArray">のいずれかを含む</option>
-              <option value="$gt">よりも大きい</option>
-              <option value="$gte">以上</option>
-              <option value="$lt">よりも小さい</option>
-              <option value="$lte">以下</option>
+              <option value="equalTo">と同じ</option>
+              <option value="notEqualTo">ではない</option>
+              <option value="in">のいずれかと同じ</option>
+              <option value="notIn">のいずれとも違う</option>
+              <option value="inArray">のいずれかを含む</option>
+              <option value="greaterThan">よりも大きい</option>
+              <option value="greaterThanOrEqualTo">以上</option>
+              <option value="lessThan">よりも小さい</option>
+              <option value="lessThanOrEqualTo">以下</option>
             </select>
           </div>
         </div>
