@@ -424,7 +424,7 @@
             <div hide="loadingDeliveryCount" class="">
               <p hide="deliveryCount" class="hide"><span>送信される端末がありません</span></p>
               <p ng-show="deliveryCount" class=""><span class="icon device-notice colored left"></span>
-                <span class="fontL">{{installation_count}}</span> 端末に向けて送信されます
+                <span class="fontL">{{message.installation_count}}</span> 端末に向けて送信されます
               </p>
             </div>
           </div>
@@ -490,6 +490,7 @@ module.exports = {
         forIos: false,
         targets: [],
         badgeTypes: {},
+        installation_count: 0
       },
       
       html: {
@@ -502,7 +503,6 @@ module.exports = {
           {key: "boolean", value: "真偽値"}
         ]
       },
-      installation_count: 0
     };
     data.preview_message = data.message.messages[data.message.preview_index];
     return data;
@@ -631,6 +631,7 @@ module.exports = {
         this.countTargetByConditions(segmentation.segmentations);
       }
     },
+    
     countTargetByConditions: function(searchConditions) {
       let installation = this.ncmb.Installation;
       for (let i = 0; i < searchConditions.length; i++) {
@@ -658,8 +659,7 @@ module.exports = {
         .count()
         .fetchAll()
         .then((result) => {
-          console.log(result)
-          this.installation_count = result.count;
+          this.message.installation_count = result.count;
         })
     }
   },

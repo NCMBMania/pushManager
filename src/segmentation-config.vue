@@ -53,6 +53,7 @@ module.exports = {
     return data;
   },
   created: function() {
+    
   },
   methods: {
     add: function(e) {
